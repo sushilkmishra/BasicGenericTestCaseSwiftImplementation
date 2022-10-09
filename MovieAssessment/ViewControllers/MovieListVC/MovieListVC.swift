@@ -65,23 +65,6 @@ class MovieListVC: ViewController<MovieListViewModel> {
     
     // MARK: Life cycle method
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.navigationItem.title = "Movies App"
-        
-        favoriteCollection.register(FavoritesCell.self, forCellWithReuseIdentifier: String(describing: FavoritesCell.self))
-        favoriteCollection.dataSource = self
-        favoriteCollection.delegate = self
-        
-        movieTable.register(MovieCell.self, forCellReuseIdentifier: String(describing: MovieCell.self))
-        movieTable.dataSource = self
-        movieTable.delegate = self
-        addViewsAndConstraint()
-        nextButton.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
-        // Do any additional setup after loading the view.
-        actionAfterLoad()
-    }
-    
     func addViewsAndConstraint(){
         verticalStackView.addSubview(favoriteLabel)
         verticalStackView.addSubview(favoriteCollection)
@@ -127,6 +110,23 @@ class MovieListVC: ViewController<MovieListViewModel> {
             
         ])
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.navigationItem.title = "Movies App"
+        
+        favoriteCollection.register(FavoritesCell.self, forCellWithReuseIdentifier: String(describing: FavoritesCell.self))
+        favoriteCollection.dataSource = self
+        favoriteCollection.delegate = self
+        
+        movieTable.register(MovieCell.self, forCellReuseIdentifier: String(describing: MovieCell.self))
+        movieTable.dataSource = self
+        movieTable.delegate = self
+        addViewsAndConstraint()
+        nextButton.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
+        // Do any additional setup after loading the view.
+        actionAfterLoad()
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.fetchMovieList()
@@ -136,7 +136,6 @@ class MovieListVC: ViewController<MovieListViewModel> {
         self.viewModel.delegate = self
         self.viewModel.movieDelegate = self
     }
-    
     @objc func nextAction(){
         if let movieData = self.viewModel.selectedMovie {
             let viewModel = DetailViewModel()
