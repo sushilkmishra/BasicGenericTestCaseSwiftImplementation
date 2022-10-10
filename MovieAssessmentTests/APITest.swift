@@ -7,26 +7,8 @@
 
 import XCTest
 
-class MockURLSession: URLSession {
-  var cachedUrl: URL?
-  override func dataTask(with url: URL, completionHandler: @escaping(Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-    self.cachedUrl = url
-      return URLSessionDataTask()
-  }
-}
-
 final class APITest: XCTestCase {
-
-//    func testGetMoviesWithExpectedURLHostAndPath() {
-//      let service = MovieListService()
-//        let mockURLSession = MockURLSession()
-//        service.session = mockURLSession
-//        service.getMovieList{(result: Result<[MovieModel], Error>) in }
-//        XCTAssertEqual(mockURLSession.cachedUrl?.host, "61efc467732d93001778e5ac.mockapi.io")
-//         XCTAssertEqual(mockURLSession.cachedUrl?.path, "/movies/list")
-//    }
-    
-    
+        
     func testGetMoviesSuccess() {
       let service = MovieListService()
         var movieResponse: [MovieModel]?
@@ -64,7 +46,7 @@ final class APITest: XCTestCase {
         }
     }
     
-    
+    //for failure test if changing URL for path
     func testGetMoviesFailure() {
       let service = MovieListService()
         var errorResponse: Error?
@@ -78,6 +60,9 @@ final class APITest: XCTestCase {
                 errorResponse = error
                 errorExpectation.fulfill()
             }
+        }
+        waitForExpectations(timeout: 2){ error in
+            XCTAssertNotNil(errorExpectation)
         }
     }
 }

@@ -27,7 +27,7 @@ class MovieListVC: ViewController<MovieListViewModel> {
         return verticalStackView
     }()
     
-    private let nextButton: UIButton = {
+    let nextButton: UIButton = {
         let nextButton = UIButton()
         nextButton.setTitle("Next", for: .normal)
         nextButton.setTitleColor(.black, for: .normal)
@@ -137,11 +137,14 @@ class MovieListVC: ViewController<MovieListViewModel> {
     }
     @objc func nextAction(){
         if let movieData = self.viewModel.selectedMovie {
-            let viewModel = DetailViewModel()
-            viewModel.movieData = movieData
-            let detailScreen = DetailVC(viewModel: viewModel)
-            self.navigationController?.pushViewController(detailScreen, animated: true)
+            self.navigateUserToDetail(movieData: movieData)
         }
+    }
+    func navigateUserToDetail(movieData: MovieModel) {
+        let viewModel = DetailViewModel()
+        viewModel.movieData = movieData
+        let detailScreen = DetailVC(viewModel: viewModel)
+        self.navigationController?.pushViewController(detailScreen, animated: true)
     }
 }
 // MARK: table view datasource and delegate
@@ -219,14 +222,17 @@ extension MovieListVC: MovieListDelegate{
         }
     }
     func updateSelectedItem(collectionIndex: [IndexPath], tableIndexPath: [IndexPath]) {
+       reloadTableData(collectionIndex: collectionIndex, tableIndexPath: tableIndexPath, selected: self.viewModel.selectedMovie)
+    }
+    
+    func reloadTableData(collectionIndex: [IndexPath], tableIndexPath: [IndexPath], selected: MovieModel? = nil) {
         if collectionIndex.count > 0 {
             favoriteCollection.reloadItems(at: collectionIndex)
         }
         if tableIndexPath.count > 0 {
             movieTable.reloadRows(at: tableIndexPath, with: .fade)
         }
-        
-        if self.viewModel.selectedMovie != nil {
+        if selected != nil {
             self.nextButton.backgroundColor = UIColor(red: 53.0/255, green: 123.0/255, blue: 181.0/255, alpha: 1.0)
             self.nextButton.setTitleColor(UIColor.white, for: .normal)
         }

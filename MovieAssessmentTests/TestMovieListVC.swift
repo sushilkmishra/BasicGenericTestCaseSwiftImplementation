@@ -48,18 +48,38 @@ final class TestMovieListVC: XCTestCase {
         return mockFavoriteMovieResponse.results
     }
     
-    func testNextAction() throws {
+    func testNextButtonFunction() throws {
+        // Wrap ViewController into a Spy version of Navigation Controller
+        let dataExpectation = expectation(description: "Navigation work")
+        let vc = MovieListVC()
+        let mockMovieResponse = try self.getMockMovieList()
+        vc.navigateUserToDetail(movieData: mockMovieResponse[0])
+        dataExpectation.fulfill()
+        waitForExpectations(timeout: 2){ error in
+            XCTAssertNotNil(dataExpectation)
+        }
+    }
+    
+    func testReloadData() throws {
+        // Wrap ViewController into a Spy version of Navigation Controller
+        let dataExpectation = expectation(description: "Reload data")
         let viewModel = MovieListViewModel()
         let mockMovieResponse = try self.getMockMovieList()
         let mockFavoriteMovieResponse = try self.getMockFavMovieList()
         let favoriteList =  viewModel.filterFavMovies(list: mockMovieResponse, idsArr: mockFavoriteMovieResponse)
+        let (watched, towatch) = viewModel.filterMovies(list: mockMovieResponse)
         viewModel.selectedMovie = favoriteList[0]
-        if let movieData = viewModel.selectedMovie {
-            let viewModel = DetailViewModel()
-            viewModel.movieData = movieData
-            let detailScreen = DetailVC(viewModel: viewModel)
+        viewModel.watchedList = watched
+        viewModel.toWatchList = towatch
+        viewModel.favoriteMovieList = favoriteList
+        let vc = MovieListVC()
+        vc.reloadTableData(collectionIndex: [IndexPath(item: 0, section: 0)], tableIndexPath: [IndexPath(row: 0, section: 0)])
+        dataExpectation.fulfill()
+        waitForExpectations(timeout: 2){ error in
+            XCTAssertNotNil(dataExpectation)
         }
     }
+    
     
     func testSelectedMovieForCell() throws {
         let dataExpectation1 = expectation(description: "Data Exist for first index")
