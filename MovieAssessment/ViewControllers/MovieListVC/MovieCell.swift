@@ -9,7 +9,8 @@ import UIKit
 import Kingfisher
 
 class MovieCell: UITableViewCell {
-    
+    private let borderWidth = 2.0
+
     private let view: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -103,55 +104,37 @@ class MovieCell: UITableViewCell {
     
     func configureCellData(viewModel: MovieListViewModel, indexPath: IndexPath) {
         view.layer.borderColor = UIColor.systemGray6.cgColor
-        view.layer.borderWidth = 2.0
+        view.layer.borderWidth = borderWidth
         if indexPath.section == 0 {
             if viewModel.watchedList.count > 0 {
-                nameLabel.text = viewModel.watchedList[indexPath.row].title
-                ratingLabel.text = "Rating: \(viewModel.watchedList[indexPath.row].rating)"
-                let imgName = viewModel.watchedList[indexPath.row].poster_path
-                let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
-                movieImage.kf.setImage(with: URL(string:imgUrl))
-                if viewModel.lastSelectedMovie != nil {
-                    if viewModel.lastSelectedMovie?.isWatched == true {
-                        if viewModel.lastSelectedMovie?.id == viewModel.watchedList[indexPath.row].id {
-                            view.layer.borderColor = UIColor.systemGray6.cgColor
-                            view.layer.borderWidth = 2.0
-                        }
-                    }
-                }
+                self.updateUIDataForCell(movieData: viewModel.watchedList[indexPath.row])
                 if viewModel.selectedMovie != nil {
                     if viewModel.selectedMovie?.isWatched == true {
                         if viewModel.selectedMovie?.id == viewModel.watchedList[indexPath.row].id {
                             view.layer.borderColor = UIColor.systemBlue.cgColor
-                            view.layer.borderWidth = 2.0
                         }
                     }
                 }
             }
         } else {
             if viewModel.toWatchList.count > 0 {
-                nameLabel.text = viewModel.toWatchList[indexPath.row].title
-                ratingLabel.text = "Rating: \(viewModel.toWatchList[indexPath.row].rating)"
-                let imgName = viewModel.toWatchList[indexPath.row].poster_path
-                let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
-                movieImage.kf.setImage(with: URL(string:imgUrl))
-                if viewModel.lastSelectedMovie != nil {
-                    if viewModel.lastSelectedMovie?.isWatched == false {
-                        if viewModel.lastSelectedMovie?.id == viewModel.toWatchList[indexPath.row].id {
-                            view.layer.borderColor = UIColor.systemGray6.cgColor
-                            view.layer.borderWidth = 2.0
-                        }
-                    }
-                }
+                self.updateUIDataForCell(movieData: viewModel.toWatchList[indexPath.row])
                 if viewModel.selectedMovie != nil {
                     if viewModel.selectedMovie?.isWatched == false {
                         if viewModel.selectedMovie?.id == viewModel.toWatchList[indexPath.row].id {
                             view.layer.borderColor = UIColor.systemBlue.cgColor
-                            view.layer.borderWidth = 2.0
                         }
                     }
                 }
             }
         }
+    }
+    
+    func updateUIDataForCell(movieData: MovieModel){
+        nameLabel.text = movieData.title
+        ratingLabel.text = "Rating: \(movieData.rating)"
+        let imgName = movieData.poster_path
+        let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
+        movieImage.kf.setImage(with: URL(string:imgUrl))
     }
 }

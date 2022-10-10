@@ -110,7 +110,7 @@ final class TestMovieListVC: XCTestCase {
         
         waitForExpectations(timeout: 2){ error in
             XCTAssertNotNil(dataExpectation1)
-            XCTAssertNotNil(dataExpectation1)
+            XCTAssertNotNil(dataExpectation2)
 
         }
     }

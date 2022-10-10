@@ -9,6 +9,7 @@ import UIKit
 import Kingfisher
 
 class FavoritesCell: UICollectionViewCell {
+    private let borderWidth = 2.0
     private let view: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGray6
@@ -79,20 +80,12 @@ class FavoritesCell: UICollectionViewCell {
             let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
             movieImage.kf.setImage(with: URL(string:imgUrl))
             view.layer.borderColor = UIColor.systemGray6.cgColor
-            view.layer.borderWidth = 2.0
-            if viewModel.lastSelectedMovie != nil {
-                if viewModel.lastSelectedMovie?.id == movieData.id {
-                    view.layer.borderColor = UIColor.systemGray6.cgColor
-                    view.layer.borderWidth = 2.0
-                }
-            }
+            view.layer.borderWidth = borderWidth
             if viewModel.selectedMovie != nil {
                 if viewModel.selectedMovie?.id == movieData.id {
                     view.layer.borderColor = UIColor.systemBlue.cgColor
-                    view.layer.borderWidth = 2.0
                 }
             }
         }
     }
-    
 }
