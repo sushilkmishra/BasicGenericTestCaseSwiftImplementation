@@ -81,7 +81,9 @@ class DetailVC: ViewController<DetailViewModel> {
         super.viewDidLoad()
         self.navigationItem.title = "Movie Detail"
         addUIConstraint()
-        updateUIData()
+        if let movieData = self.viewModel.movieData {
+            updateUIData(movieData: movieData)
+        }
     }
     
     init(viewModel: DetailViewModel) {
@@ -142,17 +144,15 @@ class DetailVC: ViewController<DetailViewModel> {
         ])
     }
     
-    func updateUIData() {
-        if let movieData = self.viewModel.movieData {
-            descriptionLabel.text = movieData.overview
-            ratingLabel.text = "Rating: \(movieData.rating)"
-            dateLabel.text = "Release Date: \(movieData.release_date)"
-            languageLabel.text = "Language: \(movieData.original_language)"
-            
-            let imgName = movieData.poster_path
-            let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
-            movieImage.kf.setImage(with: URL(string:imgUrl))
-        }
+    func updateUIData(movieData: MovieModel) {
+        descriptionLabel.text = movieData.overview
+        ratingLabel.text = "Rating: \(movieData.rating)"
+        dateLabel.text = "Release Date: \(movieData.release_date)"
+        languageLabel.text = "Language: \(movieData.original_language)"
+        
+        let imgName = movieData.poster_path
+        let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
+        movieImage.kf.setImage(with: URL(string:imgUrl))
         
     }
 }

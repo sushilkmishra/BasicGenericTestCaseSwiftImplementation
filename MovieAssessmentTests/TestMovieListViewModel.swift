@@ -121,5 +121,70 @@ final class TestMovieListViewModel: XCTestCase {
         XCTAssertEqual(collectionIndexpath.count, 0)
         
     }
+    
+    func testfavSelection() throws {
+        let viewModel = MovieListViewModel()
+        let mockMovieResponse = try self.getMockMovieList()
+        let mockFavoriteMovieResponse = try self.getMockFavMovieList()
+        let favoriteList =  viewModel.filterFavMovies(list: mockMovieResponse, idsArr: mockFavoriteMovieResponse)
+        viewModel.selectedMovie = favoriteList[0]
+        viewModel.actionOnFavSelection(movieData: favoriteList[1])
+        XCTAssertEqual(viewModel.lastSelectedMovie?.id, favoriteList[0].id)
+        XCTAssertEqual(viewModel.selectedMovie?.id, favoriteList[1].id)
+    }
+    
+    func testActionTabSelection() throws {
+        let viewModel = MovieListViewModel()
+        let mockMovieResponse = try self.getMockMovieList()
+        let (watched, toWatch) = viewModel.filterMovies(list: mockMovieResponse)
+        viewModel.watchedList = watched
+        viewModel.toWatchList = toWatch
+        let indexpath = IndexPath(row: 0, section: 0)
+        viewModel.actionOnTableSelection(indexPath: indexpath)
+        XCTAssertEqual(viewModel.selectedMovie?.id, watched[0].id)
+    }
+
+    func testActionTabSelectionForNextSection() throws {
+        let viewModel = MovieListViewModel()
+        let mockMovieResponse = try self.getMockMovieList()
+        let (watched, toWatch) = viewModel.filterMovies(list: mockMovieResponse)
+        viewModel.watchedList = watched
+        viewModel.toWatchList = toWatch
+        let indexpath = IndexPath(row: 0, section: 1)
+        viewModel.actionOnTableSelection(indexPath: indexpath)
+        XCTAssertEqual(viewModel.selectedMovie?.id, toWatch[0].id)
+    }
+    
+    func testActionTabSelectionWhichFavAlso() throws {
+        let viewModel = MovieListViewModel()
+        let mockMovieResponse = try self.getMockMovieList()
+        let mockFavoriteMovieResponse = try self.getMockFavMovieList()
+        let favoriteList =  viewModel.filterFavMovies(list: mockMovieResponse, idsArr: mockFavoriteMovieResponse)
+        viewModel.selectedMovie = favoriteList[0]
+        let (watched, toWatch) = viewModel.filterMovies(list: mockMovieResponse)
+        viewModel.watchedList = watched
+        viewModel.toWatchList = toWatch
+        let indexpath = IndexPath(row: 0, section: 0)
+        viewModel.actionOnTableSelection(indexPath: indexpath)
+        XCTAssertEqual(viewModel.selectedMovie?.id, watched[0].id)
+        XCTAssertEqual(viewModel.selectedMovie?.id, favoriteList[0].id)
+    }
+    
+    func testActionTabSelectionSecondSectionWhichFavAlso() throws {
+        let viewModel = MovieListViewModel()
+        let mockMovieResponse = try self.getMockMovieList()
+        let mockFavoriteMovieResponse = try self.getMockFavMovieList()
+        let favoriteList =  viewModel.filterFavMovies(list: mockMovieResponse, idsArr: mockFavoriteMovieResponse)
+        viewModel.lastSelectedMovie = favoriteList[0]
+        viewModel.selectedMovie = favoriteList[1]
+        let (watched, toWatch) = viewModel.filterMovies(list: mockMovieResponse)
+        viewModel.watchedList = watched
+        viewModel.toWatchList = toWatch
+        let indexpath = IndexPath(row: 0, section: 1)
+        viewModel.actionOnTableSelection(indexPath: indexpath)
+        XCTAssertEqual(viewModel.selectedMovie?.id, toWatch[0].id)
+        XCTAssertEqual(viewModel.selectedMovie?.id, favoriteList[1].id)
+
+    }
 
 }

@@ -1,14 +1,13 @@
 //
-//  MovieAssessmentTests.swift
+//  TestDetailVC.swift
 //  MovieAssessmentTests
 //
-//  Created by Sushil K Mishra on 08/10/22.
+//  Created by Sushil K Mishra on 10/10/22.
 //
 
 import XCTest
-@testable import MovieAssessment
 
-final class MovieAssessmentTests: XCTestCase {
+final class TestDetailVC: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -32,15 +31,26 @@ final class MovieAssessmentTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-    
-    func testCustomErrorNoData() {
-        let message = CustomError.noData
-        XCTAssertEqual(message.errorDescription, "Something went wrong")
+    func getMockMovieList() throws -> [MovieModel] {
+        guard let path = Bundle(for: TestDetailVC.self).url(forResource: "MovieList", withExtension: "json")
+        else { fatalError("Can't find MovieList.json file") }
+        let data = try Data(contentsOf: path)
+        let mockMovieResponse = try JSONDecoder().decode(MovieResponse.self, from: data)
+        return mockMovieResponse.results
     }
+    
+    
+    func testUpdateUIData() throws {
+        let mockMovieResponse = try self.getMockMovieList()
+        let viewModel = DetailViewModel()
+        viewModel.movieData = mockMovieResponse[0]
+        let vc = DetailVC(viewModel: viewModel)
+        if let movieData = viewModel.movieData {
+            vc.updateUIData(movieData: movieData)
+        }
+        XCTAssertEqual(viewModel.movieData?.id, 1)
+        XCTAssertEqual(viewModel.movieData?.rating, 8.0)
 
-    func testCustomErrorNoConnection() {
-        let message = CustomError.noConnection
-        XCTAssertEqual(message.errorDescription, "No Internet Connection")
     }
 
 }
