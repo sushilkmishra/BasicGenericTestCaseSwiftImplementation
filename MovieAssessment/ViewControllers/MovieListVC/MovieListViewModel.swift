@@ -131,27 +131,15 @@ extension MovieListViewModel {
     func checkIndexForUpdate(favList: [MovieModel], watched: [MovieModel], toWatch: [MovieModel], lastSelected: MovieModel? = nil, currentSelected: MovieModel? = nil) -> ([IndexPath], [IndexPath]) {
         var lastSelectedFvrtIndex = -1
         var currentSelectedFvrtIndex = -1
+        var lastSelectedTableIndex = -1
+        var currentSelectedTableIndex = -1
+        
         if lastSelected != nil {
+            //for favorite checking last selected
             if let index = favList.firstIndex(where: {$0.id == lastSelected?.id}) {
                 lastSelectedFvrtIndex = index
             }
-        }
-        if let index = favList.firstIndex(where: {$0.id == currentSelected?.id}) {
-            currentSelectedFvrtIndex = index
-        }
-        var arr = [IndexPath]()
-        if lastSelectedFvrtIndex != -1 {
-            let indexPath = IndexPath(item: lastSelectedFvrtIndex, section: 0)
-            arr.append(indexPath)
-        }
-        if currentSelectedFvrtIndex != -1 {
-            let indexPath = IndexPath(item: currentSelectedFvrtIndex, section: 0)
-            arr.append(indexPath)
-        }
-        
-        var lastSelectedTableIndex = -1
-        var currentSelectedTableIndex = -1
-        if lastSelected != nil {
+            //for Complete list checking last selected
             if lastSelected?.isWatched == true {
                 if let index = watched.firstIndex(where: {$0.id == lastSelected?.id}) {
                     lastSelectedTableIndex = index
@@ -162,7 +150,11 @@ extension MovieListViewModel {
                 }
             }
         }
-        
+        //for favorite checking current selected
+        if let index = favList.firstIndex(where: {$0.id == currentSelected?.id}) {
+            currentSelectedFvrtIndex = index
+        }
+        //for Complete list checking current selected
         if currentSelected?.isWatched == true {
             if let index = watched.firstIndex(where: {$0.id == currentSelected?.id}) {
                 currentSelectedTableIndex = index
@@ -172,7 +164,17 @@ extension MovieListViewModel {
                 currentSelectedTableIndex = index
             }
         }
-        
+        //for favorite update index list
+        var arr = [IndexPath]()
+        if lastSelectedFvrtIndex != -1 {
+            let indexPath = IndexPath(item: lastSelectedFvrtIndex, section: 0)
+            arr.append(indexPath)
+        }
+        if currentSelectedFvrtIndex != -1 {
+            let indexPath = IndexPath(item: currentSelectedFvrtIndex, section: 0)
+            arr.append(indexPath)
+        }
+        //for Complete list update index list
         var arrForTable = [IndexPath]()
         if lastSelectedTableIndex != -1 {
             var section = 0
