@@ -27,7 +27,7 @@ class MovieListVC: ViewController<MovieListViewModel> {
         return verticalStackView
     }()
     
-    let nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let nextButton = UIButton()
         nextButton.setTitle("Next", for: .normal)
         nextButton.setTitleColor(.black, for: .normal)
