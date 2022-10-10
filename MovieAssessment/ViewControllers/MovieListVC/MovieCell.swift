@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
 
 class MovieCell: UITableViewCell {
-
-    let view: UIView = {
+    
+    private let view: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemGray6
@@ -19,7 +20,7 @@ class MovieCell: UITableViewCell {
         return view
     }()
     
-    let nameLabel : UILabel = {
+    private let nameLabel : UILabel = {
         let nameLabel = UILabel()
         nameLabel.textColor = .black
         nameLabel.font = UIFont.systemFont(ofSize: 16.0)
@@ -29,7 +30,7 @@ class MovieCell: UITableViewCell {
         return nameLabel
     }()
     
-    let ratingLabel : UILabel = {
+    private let ratingLabel : UILabel = {
         let ratingLabel = UILabel()
         ratingLabel.textColor = .black
         ratingLabel.font = UIFont.systemFont(ofSize: 16.0)
@@ -39,7 +40,7 @@ class MovieCell: UITableViewCell {
         return ratingLabel
     }()
     
-    let movieImage : UIImageView = {
+    private let movieImage : UIImageView = {
         let movieImage = UIImageView()
         movieImage.contentMode = .scaleAspectFill
         movieImage.backgroundColor = .systemGray2
@@ -56,13 +57,13 @@ class MovieCell: UITableViewCell {
         view.addSubview(nameLabel)
         view.addSubview(movieImage)
         view.addSubview(ratingLabel)
-
+        
         NSLayoutConstraint.activate([
             movieImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
             movieImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             movieImage.widthAnchor.constraint(equalToConstant: 60),
             movieImage.bottomAnchor.constraint(equalTo:view.bottomAnchor, constant: -10),
-
+            
             nameLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
             nameLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 10),
             nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 20),
@@ -70,7 +71,7 @@ class MovieCell: UITableViewCell {
             ratingLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
             ratingLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 10),
             ratingLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 20),
-                   ])
+        ])
         
         
         contentView.addSubview(view)
@@ -93,11 +94,64 @@ class MovieCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
+    
+    func configureCellData(viewModel: MovieListViewModel, indexPath: IndexPath) {
+        view.layer.borderColor = UIColor.systemGray6.cgColor
+        view.layer.borderWidth = 2.0
+        if indexPath.section == 0 {
+            if viewModel.watchedList.count > 0 {
+                nameLabel.text = viewModel.watchedList[indexPath.row].title
+                ratingLabel.text = "Rating: \(viewModel.watchedList[indexPath.row].rating)"
+                let imgName = viewModel.watchedList[indexPath.row].poster_path
+                let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
+                movieImage.kf.setImage(with: URL(string:imgUrl))
+                if viewModel.lastSelectedMovie != nil {
+                    if viewModel.lastSelectedMovie?.isWatched == true {
+                        if viewModel.lastSelectedMovie?.id == viewModel.watchedList[indexPath.row].id {
+                            view.layer.borderColor = UIColor.systemGray6.cgColor
+                            view.layer.borderWidth = 2.0
+                        }
+                    }
+                }
+                if viewModel.selectedMovie != nil {
+                    if viewModel.selectedMovie?.isWatched == true {
+                        if viewModel.selectedMovie?.id == viewModel.watchedList[indexPath.row].id {
+                            view.layer.borderColor = UIColor.systemBlue.cgColor
+                            view.layer.borderWidth = 2.0
+                        }
+                    }
+                }
+            }
+        } else {
+            if viewModel.toWatchList.count > 0 {
+                nameLabel.text = viewModel.toWatchList[indexPath.row].title
+                ratingLabel.text = "Rating: \(viewModel.toWatchList[indexPath.row].rating)"
+                let imgName = viewModel.toWatchList[indexPath.row].poster_path
+                let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
+                movieImage.kf.setImage(with: URL(string:imgUrl))
+                if viewModel.lastSelectedMovie != nil {
+                    if viewModel.lastSelectedMovie?.isWatched == false {
+                        if viewModel.lastSelectedMovie?.id == viewModel.toWatchList[indexPath.row].id {
+                            view.layer.borderColor = UIColor.systemGray6.cgColor
+                            view.layer.borderWidth = 2.0
+                        }
+                    }
+                }
+                if viewModel.selectedMovie != nil {
+                    if viewModel.selectedMovie?.isWatched == false {
+                        if viewModel.selectedMovie?.id == viewModel.toWatchList[indexPath.row].id {
+                            view.layer.borderColor = UIColor.systemBlue.cgColor
+                            view.layer.borderWidth = 2.0
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

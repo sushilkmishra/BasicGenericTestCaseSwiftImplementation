@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 class DetailVC: ViewController<DetailViewModel> {
-   
+    
     private let verticalUIView: UIView = {
         let verticalUIView = UIView()
         verticalUIView.translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +26,7 @@ class DetailVC: ViewController<DetailViewModel> {
         return verticalStackView
     }()
     
-    let movieImage : UIImageView = {
+    private let movieImage : UIImageView = {
         let movieImage = UIImageView()
         movieImage.contentMode = .scaleAspectFill
         movieImage.backgroundColor = .systemGray6
@@ -36,7 +36,7 @@ class DetailVC: ViewController<DetailViewModel> {
         return movieImage
     }()
     
-    let descriptionLabel : UILabel = {
+    private let descriptionLabel : UILabel = {
         let descriptionLabel = UILabel()
         descriptionLabel.textColor = .black
         descriptionLabel.font = UIFont.systemFont(ofSize: 16.0)
@@ -46,7 +46,7 @@ class DetailVC: ViewController<DetailViewModel> {
         return descriptionLabel
     }()
     
-    let ratingLabel : UILabel = {
+    private let ratingLabel : UILabel = {
         let ratingLabel = UILabel()
         ratingLabel.textColor = .black
         ratingLabel.font = UIFont.systemFont(ofSize: 16.0)
@@ -56,7 +56,7 @@ class DetailVC: ViewController<DetailViewModel> {
         return ratingLabel
     }()
     
-    let dateLabel : UILabel = {
+    private let dateLabel : UILabel = {
         let dateLabel = UILabel()
         dateLabel.textColor = .black
         dateLabel.font = UIFont.systemFont(ofSize: 16.0)
@@ -66,7 +66,7 @@ class DetailVC: ViewController<DetailViewModel> {
         return dateLabel
     }()
     
-    let languageLabel : UILabel = {
+    private let languageLabel : UILabel = {
         let languageLabel = UILabel()
         languageLabel.textColor = .black
         languageLabel.font = UIFont.systemFont(ofSize: 16.0)
@@ -100,7 +100,7 @@ class DetailVC: ViewController<DetailViewModel> {
         verticalStackView.addSubview(ratingLabel)
         verticalStackView.addSubview(dateLabel)
         verticalStackView.addSubview(languageLabel)
-
+        
         NSLayoutConstraint.activate([
             movieImage.topAnchor.constraint(equalTo: verticalStackView.topAnchor, constant: 10.0),
             movieImage.heightAnchor.constraint(equalToConstant: 100.0),
@@ -141,18 +141,18 @@ class DetailVC: ViewController<DetailViewModel> {
             verticalUIView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0.0),
         ])
     }
-
+    
     func updateUIData() {
         if let movieData = self.viewModel.movieData {
             descriptionLabel.text = movieData.overview
             ratingLabel.text = "Rating: \(movieData.rating)"
             dateLabel.text = "Release Date: \(movieData.release_date)"
             languageLabel.text = "Language: \(movieData.original_language)"
-
+            
             let imgName = movieData.poster_path
             let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
             movieImage.kf.setImage(with: URL(string:imgUrl))
         }
-       
+        
     }
 }

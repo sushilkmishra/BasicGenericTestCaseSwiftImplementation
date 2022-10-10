@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Kingfisher
 
 class MovieListVC: ViewController<MovieListViewModel> {
     
@@ -173,57 +172,7 @@ extension MovieListVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: MovieCell = tableView.dequeueReusableCell(withIdentifier: String(describing: MovieCell.self), for: indexPath) as! MovieCell
-        cell.view.layer.borderColor = UIColor.systemGray6.cgColor
-        cell.view.layer.borderWidth = 2.0
-        if indexPath.section == 0 {
-            if self.viewModel.watchedList.count > 0 {
-                cell.nameLabel.text = self.viewModel.watchedList[indexPath.row].title
-                cell.ratingLabel.text = "Rating: \(self.viewModel.watchedList[indexPath.row].rating)"
-                let imgName = self.viewModel.watchedList[indexPath.row].poster_path
-                let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
-                cell.movieImage.kf.setImage(with: URL(string:imgUrl))
-                if self.viewModel.lastSelectedMovie != nil {
-                    if self.viewModel.lastSelectedMovie?.isWatched == true {
-                        if self.viewModel.lastSelectedMovie?.id == self.viewModel.watchedList[indexPath.row].id {
-                            cell.view.layer.borderColor = UIColor.systemGray6.cgColor
-                            cell.view.layer.borderWidth = 2.0
-                        }
-                    }
-                }
-                if self.viewModel.selectedMovie != nil {
-                    if self.viewModel.selectedMovie?.isWatched == true {
-                        if self.viewModel.selectedMovie?.id == self.viewModel.watchedList[indexPath.row].id {
-                            cell.view.layer.borderColor = UIColor.systemBlue.cgColor
-                            cell.view.layer.borderWidth = 2.0
-                        }
-                    }
-                }
-            }
-        } else {
-            if self.viewModel.toWatchList.count > 0 {
-                cell.nameLabel.text = self.viewModel.toWatchList[indexPath.row].title
-                cell.ratingLabel.text = "Rating: \(self.viewModel.toWatchList[indexPath.row].rating)"
-                let imgName = self.viewModel.toWatchList[indexPath.row].poster_path
-                let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
-                cell.movieImage.kf.setImage(with: URL(string:imgUrl))
-                if self.viewModel.lastSelectedMovie != nil {
-                    if self.viewModel.lastSelectedMovie?.isWatched == false {
-                        if self.viewModel.lastSelectedMovie?.id == self.viewModel.toWatchList[indexPath.row].id {
-                            cell.view.layer.borderColor = UIColor.systemGray6.cgColor
-                            cell.view.layer.borderWidth = 2.0
-                        }
-                    }
-                }
-                if self.viewModel.selectedMovie != nil {
-                    if self.viewModel.selectedMovie?.isWatched == false {
-                        if self.viewModel.selectedMovie?.id == self.viewModel.toWatchList[indexPath.row].id {
-                            cell.view.layer.borderColor = UIColor.systemBlue.cgColor
-                            cell.view.layer.borderWidth = 2.0
-                        }
-                    }
-                }
-            }
-        }
+        cell.configureCellData(viewModel: self.viewModel, indexPath: indexPath)
         return cell
     }
     
@@ -242,26 +191,7 @@ extension MovieListVC: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: FavoritesCell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: FavoritesCell.self), for: indexPath) as! FavoritesCell
-        if self.viewModel.favoriteMovieList.count > 0 {
-            cell.nameLabel.text = self.viewModel.favoriteMovieList[indexPath.row].title
-            let imgName = self.viewModel.favoriteMovieList[indexPath.row].poster_path
-            let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
-            cell.movieImage.kf.setImage(with: URL(string:imgUrl))
-            cell.view.layer.borderColor = UIColor.systemGray6.cgColor
-            cell.view.layer.borderWidth = 2.0
-            if self.viewModel.lastSelectedMovie != nil {
-                if self.viewModel.lastSelectedMovie?.id == self.viewModel.favoriteMovieList[indexPath.row].id {
-                    cell.view.layer.borderColor = UIColor.systemGray6.cgColor
-                    cell.view.layer.borderWidth = 2.0
-                }
-            }
-            if self.viewModel.selectedMovie != nil {
-                if self.viewModel.selectedMovie?.id == self.viewModel.favoriteMovieList[indexPath.row].id {
-                    cell.view.layer.borderColor = UIColor.systemBlue.cgColor
-                    cell.view.layer.borderWidth = 2.0
-                }
-            }
-        }
+        cell.configureCellData(viewModel: self.viewModel, indexPath: indexPath)
         return cell
     }
     

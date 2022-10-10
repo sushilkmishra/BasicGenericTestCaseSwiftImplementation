@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Kingfisher
 
 class FavoritesCell: UICollectionViewCell {
-    let view: UIView = {
+    private let view: UIView = {
         let view = UIView()
         view.backgroundColor = .systemGray6
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -17,7 +18,7 @@ class FavoritesCell: UICollectionViewCell {
         return view
     }()
     
-    let nameLabel : UILabel = {
+    private let nameLabel : UILabel = {
         let nameLabel = UILabel()
         nameLabel.textColor = .black
         nameLabel.font = UIFont.systemFont(ofSize: 13.0)
@@ -27,7 +28,7 @@ class FavoritesCell: UICollectionViewCell {
         return nameLabel
     }()
     
-    let movieImage : UIImageView = {
+    private let movieImage : UIImageView = {
         let movieImage = UIImageView()
         movieImage.contentMode = .scaleAspectFill
         movieImage.backgroundColor = .systemGray2
@@ -69,4 +70,29 @@ class FavoritesCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func configureCellData(viewModel: MovieListViewModel, indexPath: IndexPath) {
+        if viewModel.favoriteMovieList.count > 0 {
+            let movieData = viewModel.favoriteMovieList[indexPath.item]
+            nameLabel.text = movieData.title
+            let imgName = movieData.poster_path
+            let imgUrl = AppConfig.shared.imageUrl(imgName: imgName)
+            movieImage.kf.setImage(with: URL(string:imgUrl))
+            view.layer.borderColor = UIColor.systemGray6.cgColor
+            view.layer.borderWidth = 2.0
+            if viewModel.lastSelectedMovie != nil {
+                if viewModel.lastSelectedMovie?.id == movieData.id {
+                    view.layer.borderColor = UIColor.systemGray6.cgColor
+                    view.layer.borderWidth = 2.0
+                }
+            }
+            if viewModel.selectedMovie != nil {
+                if viewModel.selectedMovie?.id == movieData.id {
+                    view.layer.borderColor = UIColor.systemBlue.cgColor
+                    view.layer.borderWidth = 2.0
+                }
+            }
+        }
+    }
+    
 }
